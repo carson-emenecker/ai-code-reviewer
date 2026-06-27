@@ -8,6 +8,7 @@ import Pricing from './pages/Pricing'
 import Login from './pages/Login'
 import Success from './pages/Success'
 import Cancel from './pages/Cancel'
+import Account from './pages/Account'
 
 export default function App() {
   const [user, setUser] = useState(null)
@@ -44,6 +45,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />
+            <Route path="/account" element={<Account user={user} subscription={subscription} />} />
           </Routes>
         </main>
         <Footer />

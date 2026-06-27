@@ -26,6 +26,9 @@ export default function Navbar({ user, subscription }) {
 
           {user ? (
             <div className="flex items-center gap-4">
+              <Link to="/account" className="text-gray-300 hover:text-white text-sm transition-colors">
+                Account
+              </Link>
               <span className="text-gray-400 text-sm truncate max-w-[180px]">{user.email}</span>
               {subscription === 'pro' && (
                 <span className="bg-indigo-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
