@@ -2,9 +2,34 @@ import Anthropic from '@anthropic-ai/sdk'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
+// In-memory rate limiter: 10 req/min per IP for unauthenticated requests
+const rateLimitMap = new Map()
+
+function isRateLimited(ip) {
+  const now = Date.now()
+  const windowMs = 60 * 1000
+  const max = 10
+  const entry = rateLimitMap.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs })
+    return false
+  }
+  if (entry.count >= max) return true
+  entry.count++
+  return false
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  const isAuthenticated = !!req.headers['authorization']
+  if (!isAuthenticated) {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() ?? req.socket.remoteAddress
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ error: 'Too many requests. Please slow down or log in.' })
+    }
   }
 
   const { code, language, scanType } = req.body
