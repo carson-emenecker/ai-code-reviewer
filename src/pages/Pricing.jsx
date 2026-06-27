@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { redirectToCheckout } from '../lib/stripe'
 
 const FREE_FEATURES = [
   '3 reviews per day',
@@ -16,6 +18,20 @@ const PRO_FEATURES = [
 ]
 
 export default function Pricing() {
+  const [stripeLoading, setStripeLoading] = useState(false)
+  const [stripeError, setStripeError] = useState(null)
+
+  async function handleProCheckout() {
+    setStripeError(null)
+    setStripeLoading(true)
+    try {
+      await redirectToCheckout()
+    } catch (err) {
+      setStripeError(err.message)
+      setStripeLoading(false)
+    }
+  }
+
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4 py-16">
       <div className="w-full max-w-3xl">
@@ -26,25 +42,48 @@ export default function Pricing() {
           <p className="text-gray-400 text-lg">Start free. Upgrade when you need more.</p>
         </div>
 
+        {stripeError && (
+          <div className="bg-red-950/60 border border-red-800 text-red-400 rounded-xl px-4 py-3 text-sm mb-6 text-center">
+            {stripeError}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch">
+          {/* Free card */}
           <PricingCard
             title="Free"
             price="$0"
             period="/ month"
             features={FREE_FEATURES}
-            buttonText="Get Started"
-            buttonTo="/login"
             highlighted={false}
+            action={
+              <Link
+                to="/login"
+                className="block text-center font-semibold py-3 rounded-xl text-sm transition-all bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700"
+              >
+                Get Started
+              </Link>
+            }
           />
+
+          {/* Pro card */}
           <PricingCard
             title="Pro"
             price="$9"
             period="/ month"
             features={PRO_FEATURES}
-            buttonText="Get Started"
-            buttonTo="/login"
             highlighted={true}
             badge="Most Popular"
+            action={
+              <button
+                type="button"
+                onClick={handleProCheckout}
+                disabled={stripeLoading}
+                className="w-full font-semibold py-3 rounded-xl text-sm transition-all bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:cursor-not-allowed text-white shadow-lg shadow-indigo-900/40"
+              >
+                {stripeLoading ? 'Redirecting to Stripe…' : 'Get Started'}
+              </button>
+            }
           />
         </div>
       </div>
@@ -52,7 +91,7 @@ export default function Pricing() {
   )
 }
 
-function PricingCard({ title, price, period, features, buttonText, buttonTo, highlighted, badge }) {
+function PricingCard({ title, price, period, features, highlighted, badge, action }) {
   return (
     <div
       className={`relative flex flex-col rounded-2xl p-8 bg-gray-900 ${
@@ -86,16 +125,7 @@ function PricingCard({ title, price, period, features, buttonText, buttonTo, hig
         ))}
       </ul>
 
-      <Link
-        to={buttonTo}
-        className={`block text-center font-semibold py-3 rounded-xl text-sm transition-all ${
-          highlighted
-            ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-900/40'
-            : 'bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700'
-        }`}
-      >
-        {buttonText}
-      </Link>
+      {action}
     </div>
   )
 }

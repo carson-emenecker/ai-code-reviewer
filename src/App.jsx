@@ -6,6 +6,8 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Pricing from './pages/Pricing'
 import Login from './pages/Login'
+import Success from './pages/Success'
+import Cancel from './pages/Cancel'
 
 export default function App() {
   const [user, setUser] = useState(null)
@@ -31,6 +33,8 @@ export default function App() {
             <Route path="/" element={<Home user={user} />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
           </Routes>
         </main>
         <Footer />
