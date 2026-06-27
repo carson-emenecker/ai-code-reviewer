@@ -32,6 +32,12 @@ Return ONLY valid JSON, no markdown, no explanation.`
     messages: [{ role: 'user', content: prompt }],
   })
 
-  const text = message.content[0].text.trim()
-  return JSON.parse(text)
+  const raw = message.content[0].text.trim()
+  const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
+  try {
+    return JSON.parse(text)
+  } catch (err) {
+    console.error('JSON parse failed. Raw response:', raw)
+    throw new Error('Failed to parse review response. Raw output logged to console.')
+  }
 }
