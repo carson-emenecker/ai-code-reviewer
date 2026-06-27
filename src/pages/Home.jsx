@@ -6,7 +6,7 @@ import { getUsageToday, incrementUsage, FREE_DAILY_LIMIT } from '../lib/supabase
 const LANGUAGES = ['JavaScript', 'TypeScript', 'Python', 'C', 'C++', 'Java', 'Go', 'Rust']
 const SCAN_TYPES = ['Quick Scan', 'Full Review', 'Security Audit']
 
-export default function Home({ user }) {
+export default function Home({ user, subscription }) {
   const [language, setLanguage] = useState('JavaScript')
   const [scanType, setScanType] = useState('Quick Scan')
   const [code, setCode] = useState('')
@@ -26,7 +26,7 @@ export default function Home({ user }) {
       .finally(() => setUsageLoaded(true))
   }, [user])
 
-  const atLimit = user && usageCount >= FREE_DAILY_LIMIT
+  const atLimit = user && usageCount >= FREE_DAILY_LIMIT && subscription !== 'pro'
   const canReview = user && !atLimit
 
   async function handleSubmit(e) {
@@ -56,7 +56,9 @@ export default function Home({ user }) {
         </h1>
         <p className="text-gray-400 text-xl max-w-lg mx-auto leading-relaxed">
           AI-powered code review with security analysis.{' '}
-          <span className="text-gray-300">Free for 3 reviews/day.</span>
+          <span className="text-gray-300">
+            {subscription === 'pro' ? 'Unlimited reviews.' : 'Free for 3 reviews/day.'}
+          </span>
         </p>
       </section>
 
@@ -165,9 +167,11 @@ export default function Home({ user }) {
                   'Analyze Code'
                 )}
               </button>
-              <p className="text-center text-gray-600 text-xs mt-3">
-                {usageCount} of {FREE_DAILY_LIMIT} free reviews used today
-              </p>
+              {subscription !== 'pro' && (
+                <p className="text-center text-gray-600 text-xs mt-3">
+                  {usageCount} of {FREE_DAILY_LIMIT} free reviews used today
+                </p>
+              )}
             </>
           )}
         </form>

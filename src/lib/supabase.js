@@ -31,3 +31,12 @@ export async function incrementUsage(userId) {
       { onConflict: 'user_id,date' }
     )
 }
+
+export async function getUserSubscription(userId) {
+  const { data } = await supabase
+    .from('subscriptions')
+    .select('status')
+    .eq('user_id', userId)
+    .maybeSingle()
+  return data?.status ?? 'free'
+}
