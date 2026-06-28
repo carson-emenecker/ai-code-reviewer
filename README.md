@@ -4,7 +4,7 @@ AI-powered code reviewer that catches bugs, security
 vulnerabilities, and suggests improvements.
 
 ## Live Demo
-[Try it here](https://ai-code-reviewer-six-beige.vercel.app)
+[Try it here](https://codereviewai.app)
 
 ## Features
 - AI code review powered by Claude (Haiku)
