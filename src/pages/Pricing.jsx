@@ -6,15 +6,14 @@ const FREE_FEATURES = [
   '3 reviews per day',
   'Quick Scan and Full Review',
   'All 8 languages',
-  'Community support',
+  'Email support',
 ]
 
 const PRO_FEATURES = [
   'Unlimited reviews',
   'All scan types including Security Audit',
   'All 8 languages',
-  'Review history',
-  'Priority support',
+  'Email support',
 ]
 
 export default function Pricing() {

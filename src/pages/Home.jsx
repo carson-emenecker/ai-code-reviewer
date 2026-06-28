@@ -27,7 +27,8 @@ export default function Home({ user, subscription }) {
   }, [user])
 
   const atLimit = user && usageCount >= FREE_DAILY_LIMIT && subscription !== 'pro'
-  const canReview = user && !atLimit
+  const isProGated = scanType === 'Security Audit' && subscription !== 'pro'
+  const canReview = user && !atLimit && !isProGated
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -107,6 +108,14 @@ export default function Home({ user, subscription }) {
                   </button>
                 ))}
               </div>
+              {isProGated && (
+                <p className="text-xs text-amber-400 mt-2">
+                  Security Audit is a Pro feature.{' '}
+                  <Link to="/pricing" className="underline hover:text-amber-300 transition-colors">
+                    Upgrade to unlock.
+                  </Link>
+                </p>
+              )}
             </div>
           </div>
 
@@ -155,7 +164,7 @@ export default function Home({ user, subscription }) {
             <>
               <button
                 type="submit"
-                disabled={loading || !code.trim()}
+                disabled={loading || !code.trim() || isProGated}
                 className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-all text-base shadow-lg shadow-indigo-900/30 hover:shadow-indigo-900/50"
               >
                 {loading ? (
