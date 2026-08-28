@@ -21,17 +21,6 @@ export async function getUsageToday(userId) {
   return data?.review_count ?? 0
 }
 
-export async function incrementUsage(userId) {
-  const today = todayString()
-  const current = await getUsageToday(userId)
-  await supabase
-    .from('usage_tracking')
-    .upsert(
-      { user_id: userId, date: today, review_count: current + 1 },
-      { onConflict: 'user_id,date' }
-    )
-}
-
 export async function getUserSubscription(userId) {
   const { data } = await supabase
     .from('subscriptions')

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
 
 export default function Account({ user, subscription }) {
   const [cancelling, setCancelling] = useState(false)

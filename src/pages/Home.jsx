@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { reviewCode } from '../lib/claude'
-import { getUsageToday, incrementUsage, FREE_DAILY_LIMIT } from '../lib/supabase'
+import { getUsageToday, FREE_DAILY_LIMIT } from '../lib/supabase'
 
 const LANGUAGES = ['JavaScript', 'TypeScript', 'Python', 'C', 'C++', 'Java', 'Go', 'Rust']
 const SCAN_TYPES = ['Quick Scan', 'Full Review', 'Security Audit']
@@ -39,7 +39,6 @@ export default function Home({ user, subscription }) {
     try {
       const data = await reviewCode({ code, language, scanType })
       setResults(data)
-      await incrementUsage(user.id)
       setUsageCount((c) => c + 1)
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
